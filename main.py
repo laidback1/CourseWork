@@ -38,11 +38,10 @@ class EmployeeDatabase:
 
         root.geometry("800x600")
 
-        # создаем фрейм для таблицы и полос прокрутки
+        # Робимо фрейм для таблиці и полос прокрутки
         table_frame = Frame(root)
         table_frame.pack(fill=BOTH, expand=1)
 
-        # Создание таблицы
         self.table = ttk.Treeview(table_frame, columns=("col1", "col2", "col3", "col4", "col5", "col6", "col7", "col8", "col9", "col10", "col11", "col12", "col13"))
         self.table.column("#0", width=0)
         self.table.heading("col1", text="ПІБ")
@@ -60,40 +59,40 @@ class EmployeeDatabase:
         self.table.heading("col13", text="Ім’я жінки(чоловіка)")
 
 
-        # Получаем данные из базы данных
+        # Отримуємо інформацію з БД
         conn = sqlite3.connect("employees.db")
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM employees")
         rows = cursor.fetchall()
 
-        # Заполняем таблицу данными из базы данных
+        # Заповнюємо таблицю інформацією
         for row in rows:
             self.table.insert("", "end", values=row)
 
-        # Закрываем соединение с базой данных
+        # Закриваємо з єднання з БД
         cursor.close()
         conn.close()
 
         self.table.pack(side="bottom", padx=10, pady=10)
 
-        # создаем полосы прокрутки
+        # полоси прокрутки
         xscrollbar = Scrollbar(table_frame, orient=HORIZONTAL, command=self.table.xview)
         yscrollbar = Scrollbar(table_frame, orient=VERTICAL, command=self.table.yview)
         self.table.configure(xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set)
 
-        # упаковываем таблицу и полосы прокрутки
+        # упаковуємо таблицю и полоси прокрутки
         yscrollbar.pack(side=RIGHT, fill=Y)
         xscrollbar.pack(side=BOTTOM, fill=X)
         self.table.pack(fill=BOTH, expand=1)
 
 
-        # Создание кнопок
+        #Кнопки
         self.add_button = tk.Button(master, text="Додати інформацію", command=self.add_employee)
         self.edit_button = tk.Button(master, text="Змінити інформацію", command=self.update_employee)
         self.delete_button = tk.Button(master, text="Видалити інформацію", command=self.delete_employee)
         self.download_button = tk.Button(master, text="Завантажити інформацію", command=self.download_employee)
 
-        # Размещение кнопок на экране
+        # Разміщення кнопок на екрані
         self.add_button.pack(side="left", fill="x", padx=10, pady=10)
         self.edit_button.pack(side="left", fill="x", padx=10, pady=10)
         self.delete_button.pack(side="left", fill="x", padx=10, pady=10)
@@ -103,13 +102,13 @@ class EmployeeDatabase:
 
 
 
-    # Функция, вызываемая при нажатии на кнопку "Додати інформацію"
+    # Функція, яка спрацьовує при натисненні на кнопку "Додати інформацію"
     def add_employee(self):
         add_window = tk.Toplevel(self.master)
         add_window.geometry("770x250")
         add_window.title("Додати інформацію")
 
-        # Создание текстового поля и метки
+        # Створення текстового поля и помітки
         Label(add_window, text="ПІБ").grid(row=1, column=0)
         pib_entry = Entry(add_window)
         pib_entry.grid(row=1, column=1)
@@ -138,7 +137,6 @@ class EmployeeDatabase:
         ordernum_entry = Entry(add_window)
         ordernum_entry.grid(row=7, column=1)
 
-        # добавляем текстовые поля для адресно-телефонных данных
         Label(add_window, text="Адреса").grid(row=1, column=2)
         address_entry = Entry(add_window)
         address_entry.grid(row=1, column=3)
@@ -151,7 +149,6 @@ class EmployeeDatabase:
         marriage_entry = Entry(add_window)
         marriage_entry.grid(row=3, column=3)
 
-        # добавляем текстовые поля для данных о семье
         Label(add_window, text="Кількість дітей").grid(row=4, column=2)
         kids_entry = Entry(add_window)
         kids_entry.grid(row=4, column=3)
@@ -166,7 +163,7 @@ class EmployeeDatabase:
 
 
         def save_info():
-            # Получаем данные из текстовых полей
+            # Отримуємо інфо з текстових полей
             name = pib_entry.get()
             employee_id = tnum_entry.get()
             profession = prof_entry.get()
@@ -182,24 +179,16 @@ class EmployeeDatabase:
             spouse_name = spouse_name_entry.get()
             if not name or not employee_id or not profession or not hire_date or not book_series_num or not order_date or not order_num or not phone_num or not address or not marriage_data or not children_num or not child_name_birth or not spouse_name:
                 messagebox.showerror(title="Помилка", message="Усі поля повинні бути заповнені (у випадку відсутності інформації ставте знак '-')")
-                #return
             else:
-
-                # Создаем соединение с базой данных
                 conn = sqlite3.connect('employees.db')
-
-                # Создаем курсор для выполнения SQL-запросов
                 cursor = conn.cursor()
 
-                # Выполняем SQL-запрос на добавление информации в таблицу
+                # Виконуємо SQL-запит на додавання інформації в таблицю
                 cursor.execute('INSERT INTO employees VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                (name, employee_id, profession, hire_date, book_series_num, order_date,
                                 order_num, phone_num, address, marriage_data, children_num, child_name_birth, spouse_name))
-
-                # Сохраняем изменения в базе данных
+                # Зберігаємо
                 conn.commit()
-
-
 
                 notif_window = tk.Tk()
                 notif_window.geometry("480x70")
@@ -215,7 +204,7 @@ class EmployeeDatabase:
 
 
 
-                # Закрываем соединение с базой данных
+                # закриваємо з єднання
                 conn.close()
 
                 add_window.destroy()
@@ -225,10 +214,8 @@ class EmployeeDatabase:
         save_button = Button(add_window, text="Зберегти", command=save_info)
         save_button.grid(row=8, column=1, rowspan=8, padx=50, pady=20, sticky=N + S + E)
 
-        #entry = tk.Entry(add_window)
-        #entry.grid(row=10, column=1, padx=10, pady=10, sticky="w")
 
-    # Функция, вызываемая при нажатии на кнопку "Змінити інформацію"
+    # Функція, яка спрацьовує при натисненні на кнопку"Змінити інформацію"
     def update_employee(self):
         # Створення вікна
         window = tk.Tk()
@@ -240,7 +227,7 @@ class EmployeeDatabase:
             # Получение табельного номера сотрудника из поля ввода
             emp_id = entry_id.get()
 
-            # Подключение к базе данных и получение текущих значений полей сотрудника
+            # Коннект до БД и отримання наявних значень полів співробітника
             conn = sqlite3.connect('employees.db')
             c = conn.cursor()
             c.execute("SELECT * FROM employees WHERE employee_id = ?", (emp_id,))
@@ -250,7 +237,7 @@ class EmployeeDatabase:
                 messagebox.showerror("Помилка", f"Співробітника з табельним номером {emp_id} не знайдено")
             else:
 
-                # Получение новых значений полей из полей ввода или текущих значений, если поля оставлены пустыми
+                # Отримання нових значень поля из полей ввода або наявних значень, якщо поля залишили порожніми
                 name = entry_name.get() if entry_name.get() else current_values[0]
                 profession = entry_pos.get() if entry_pos.get() else current_values[2]
                 hire_date = entry_hire_date.get() if entry_hire_date.get() else current_values[3]
@@ -364,14 +351,13 @@ class EmployeeDatabase:
         text_widget.insert(tk.END, "Для зміни інформаціЇ введіть табельний номер працівника(Обов'язково!) та заповніть інформацією поле, яке хочете змінити")
         text_widget.pack()
 
-    # Функция, вызываемая при нажатии на кнопку "Видалити інформацію"
+    # Функція, яка спрацьовує при натисненні на кнопку "Видалити інформацію"
     def delete_employee(self):
         # Створення вікна
         window = tk.Toplevel()
         window.title("Видалення співробітника")
         window.geometry("400x150")
 
-        # Функція для видалення співробітника
         # Функція для видалення співробітника
         def delete_employee():
             # Підключення до бази даних
@@ -398,8 +384,7 @@ class EmployeeDatabase:
                 conn.close()
 
                 # Вивести повідомлення про успішне видалення співробітника
-                messagebox.showinfo("Успіх",
-                                    f"Інформація про співробітника з табельним номером {emp_id} успішно видалена з бази даних")
+                messagebox.showinfo("Успіх",f"Інформація про співробітника з табельним номером {emp_id} успішно видалена з бази даних")
 
         # Створення віджетів для вводу табельного номера та кнопки видалення
         label = tk.Label(window, text="Табельний номер:")
@@ -411,7 +396,7 @@ class EmployeeDatabase:
 
         window.mainloop()
 
-        # Функция, вызываемая при нажатии на кнопку "Видалити інформацію"
+        # Функція, яка спрацьовує при натисненні на кнопку "Видалити інформацію"
     def download_employee(self):
         conn = sqlite3.connect('employees.db')
         cursor = conn.cursor()
@@ -430,9 +415,6 @@ class EmployeeDatabase:
         for employee in employees:
             # Додавання рядка з даними працівника до файлу Excel
             row = list(employee)
-            #row.append(employee[9].count(',') + 1)  # Розрахунок кількості дітей
-            #row.append(employee[10])  # Ім’я та дата народження дітей
-            #row.append(employee[11] + ' ' + employee[12])  # Прізвище та ім’я жінки (чоловіка)
             worksheet.append(row)
 
         # Збереження файлу Excel
@@ -445,8 +427,6 @@ class EmployeeDatabase:
         label.pack()
 
         conn.close()
-
-
 
 root = tk.Tk()
 EmployeeDatabase(root)
